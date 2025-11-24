@@ -7,6 +7,12 @@
       "imageHint": "ethnic fashion model"
     },
     {
+      "id": "upi-qr-code",
+      "description": "A sample QR code for UPI payments.",
+      "imageUrl": "https://images.unsplash.com/photo-1626682561113-d1db402cc866?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyfHxxciUyMGNvZGV8ZW58MHx8fHwxNzYzOTc1Mzk1fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "qr code"
+    },
+    {
       "id": "ruby-anarkali-1",
       "description": "Front view of the Ruby Red Anarkali Kurta.",
       "imageUrl": "https://images.unsplash.com/photo-1594367650073-c48ef2de4674?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw3fHxyZWQlMjBkcmVzc3xlbnwwfHx8fDE3NjM4OTA4Nzl8MA&ixlib=rb-4.1.0&q=80&w=1080",

@@ -13,10 +13,13 @@ import {
   FormLabel,
   FormMessage,
 } from '@/components/ui/form';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { useToast } from '@/hooks/use-toast';
 import { useRouter } from 'next/navigation';
 import { useCart } from '@/hooks/use-cart';
+import Image from 'next/image';
+import { PlaceHolderImages } from '@/lib/placeholder-images';
+import { Upload } from 'lucide-react';
 
 const checkoutSchema = z.object({
   name: z.string().min(2, 'Name is required'),
@@ -25,10 +28,9 @@ const checkoutSchema = z.object({
   city: z.string().min(2, 'City is required'),
   postalCode: z.string().min(5, 'Postal code is required'),
   country: z.string().min(2, 'Country is required'),
-  cardName: z.string().min(2, 'Name on card is required'),
-  cardNumber: z.string().regex(/^\d{16}$/, 'Invalid card number'),
-  cardExpiry: z.string().regex(/^(0[1-9]|1[0-2])\/\d{2}$/, 'Invalid expiry date (MM/YY)'),
-  cardCvc: z.string().regex(/^\d{3,4}$/, 'Invalid CVC'),
+  paymentScreenshot: z.any().refine(
+    (files) => files?.length === 1, 'Payment screenshot is required.'
+  ),
 });
 
 type CheckoutFormValues = z.infer<typeof checkoutSchema>;
@@ -37,19 +39,23 @@ export default function CheckoutPage() {
   const { toast } = useToast();
   const router = useRouter();
   const { clearCart, cartTotal, itemCount } = useCart();
+  const qrCodeImage = PlaceHolderImages.find(p => p.id === 'upi-qr-code');
+
   const form = useForm<CheckoutFormValues>({
     resolver: zodResolver(checkoutSchema),
     defaultValues: {
       name: '', email: '', address: '', city: '', postalCode: '', country: '',
-      cardName: '', cardNumber: '', cardExpiry: '', cardCvc: '',
     },
   });
 
   const onSubmit = (data: CheckoutFormValues) => {
-    console.log('Checkout Data:', data);
+    console.log('Checkout Data:', {
+      ...data,
+      paymentScreenshot: data.paymentScreenshot[0].name,
+    });
     toast({
-      title: 'Order Placed!',
-      description: 'Thank you for your purchase. Your order is being processed.',
+      title: 'Order Submitted for Verification!',
+      description: 'Thank you for your purchase. Your order will be confirmed via email or WhatsApp once payment is verified.',
     });
     clearCart();
     router.push('/');
@@ -94,27 +100,57 @@ export default function CheckoutPage() {
               </Card>
 
               <Card>
-                <CardHeader><CardTitle>Payment Details</CardTitle></CardHeader>
-                <CardContent className="space-y-4">
-                  <FormField control={form.control} name="cardName" render={({ field }) => (
-                    <FormItem><FormLabel>Name on Card</FormLabel><FormControl><Input {...field} /></FormControl><FormMessage /></FormItem>
-                  )} />
-                  <FormField control={form.control} name="cardNumber" render={({ field }) => (
-                    <FormItem><FormLabel>Card Number</FormLabel><FormControl><Input placeholder="XXXXXXXXXXXXXXXX" {...field} /></FormControl><FormMessage /></FormItem>
-                  )} />
-                  <div className="grid grid-cols-2 gap-4">
-                    <FormField control={form.control} name="cardExpiry" render={({ field }) => (
-                      <FormItem><FormLabel>Expiry Date</FormLabel><FormControl><Input placeholder="MM/YY" {...field} /></FormControl><FormMessage /></FormItem>
-                    )} />
-                    <FormField control={form.control} name="cardCvc" render={({ field }) => (
-                      <FormItem><FormLabel>CVC</FormLabel><FormControl><Input placeholder="123" {...field} /></FormControl><FormMessage /></FormItem>
-                    )} />
+                <CardHeader>
+                  <CardTitle>Payment Details</CardTitle>
+                  <CardDescription>
+                    Please pay by scanning the QR code or using the UPI address below. Then, upload a screenshot of the payment confirmation.
+                  </CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-6">
+                  <div className="flex flex-col sm:flex-row items-center gap-6">
+                    {qrCodeImage && (
+                      <div className="w-48 h-48 relative">
+                         <Image 
+                          src={qrCodeImage.imageUrl} 
+                          alt={qrCodeImage.description} 
+                          fill 
+                          className="rounded-md object-contain"
+                          data-ai-hint={qrCodeImage.imageHint}
+                        />
+                      </div>
+                    )}
+                    <div className="text-center sm:text-left">
+                      <p className="text-muted-foreground">Scan and Pay</p>
+                      <p className="font-mono text-lg font-semibold break-all">hetalshruti@upi</p>
+                      <p className="font-bold text-2xl mt-2">Total: ₹{cartTotal.toLocaleString('en-IN')}</p>
+                    </div>
                   </div>
+                  <FormField
+                    control={form.control}
+                    name="paymentScreenshot"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Upload Payment Screenshot</FormLabel>
+                        <FormControl>
+                          <div className="relative">
+                            <Upload className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
+                            <Input 
+                              type="file" 
+                              accept="image/*"
+                              className="pl-10"
+                              onChange={(e) => field.onChange(e.target.files)} 
+                            />
+                          </div>
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
                 </CardContent>
               </Card>
               
                <Button type="submit" size="lg" className="w-full" disabled={form.formState.isSubmitting}>
-                {form.formState.isSubmitting ? 'Placing Order...' : `Pay ₹${cartTotal.toLocaleString('en-IN')}`}
+                {form.formState.isSubmitting ? 'Submitting...' : `Submit Order for ₹${cartTotal.toLocaleString('en-IN')}`}
                </Button>
             </form>
           </Form>
