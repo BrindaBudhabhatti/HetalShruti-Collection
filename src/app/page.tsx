@@ -45,37 +45,6 @@ export default function Home() {
       </section>
       
       <section className="container mx-auto px-4">
-        <div className="text-center">
-            <h2 className="font-headline text-4xl font-bold tracking-tight md:text-5xl">Our Collections</h2>
-            <p className="mt-4 text-lg text-muted-foreground">Browse through our curated categories of ethnic wear.</p>
-        </div>
-        <div className="mt-12 grid grid-cols-1 gap-8 md:grid-cols-3">
-          {categories.map((category) => (
-            <Link href={category.href} key={category.name} className="group">
-              <Card className="overflow-hidden transition-all duration-300 hover:shadow-2xl hover:-translate-y-2">
-                <CardContent className="p-0">
-                  <div className="relative h-96 w-full">
-                    <Image
-                      src={`https://picsum.photos/seed/${category.name.replace(/\s+/g, '-')}/600/800`}
-                      alt={category.name}
-                      fill
-                      className="object-cover transition-transform duration-300 group-hover:scale-105"
-                      data-ai-hint="ethnic fashion"
-                    />
-                     <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent" />
-                  </div>
-                  <div className="absolute bottom-0 left-0 p-6">
-                    <h3 className="font-headline text-3xl font-bold text-white">{category.name}</h3>
-                    <p className="mt-2 text-white/90">{category.description}</p>
-                  </div>
-                </CardContent>
-              </Card>
-            </Link>
-          ))}
-        </div>
-      </section>
-
-      <section className="container mx-auto px-4">
         <div className="flex items-center justify-center text-center">
             <Sparkles className="h-10 w-10 text-accent" />
             <h2 className="font-headline text-4xl font-bold tracking-tight md:text-5xl ml-4">Featured Products</h2>
