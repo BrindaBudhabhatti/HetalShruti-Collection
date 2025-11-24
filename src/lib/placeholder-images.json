@@ -1,3 +1,82 @@
 {
-  "placeholderImages": []
+  "placeholderImages": [
+    {
+      "id": "hero-1",
+      "description": "Elegant woman in traditional ethnic wear, posing gracefully.",
+      "imageUrl": "https://images.unsplash.com/photo-1668371679302-a8ec781e876e?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw4fHxldGhuaWMlMjBmYXNoaW9uJTIwbW9kZWx8ZW58MHx8fHwxNzYzOTg1NzE5fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "ethnic fashion model"
+    },
+    {
+      "id": "ruby-anarkali-1",
+      "description": "Front view of the Ruby Red Anarkali Kurta.",
+      "imageUrl": "https://images.unsplash.com/photo-1594367650073-c48ef2de4674?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw3fHxyZWQlMjBkcmVzc3xlbnwwfHx8fDE3NjM4OTA4Nzl8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "red dress"
+    },
+    {
+      "id": "ruby-anarkali-2",
+      "description": "Side view of the Ruby Red Anarkali Kurta, showing its flare.",
+      "imageUrl": "https://images.unsplash.com/photo-1594749210541-ca17da156770?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxMHx8cmVkJTIwZHJlc3MlMjBtb2RlbHxlbnwwfHx8fDE3NjM5ODU3MTl8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "red dress model"
+    },
+    {
+      "id": "golden-lehenga-1",
+      "description": "Full view of the Golden Weave Lehenga Set.",
+      "imageUrl": "https://images.unsplash.com/photo-1695192053246-b90eb805f552?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw1fHxnb2xkJTIwZHJlc3N8ZW58MHx8fHwxNzYzOTg1NzE5fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "gold dress"
+    },
+    {
+      "id": "golden-lehenga-2",
+      "description": "Close-up of the intricate golden weave on the lehenga.",
+      "imageUrl": "https://images.unsplash.com/photo-1707569615782-13f021c40eae?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw3fHxnb2xkJTIwZmFicmljfGVufDB8fHx8MTc2Mzk4NTcxOXww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "gold fabric"
+    },
+    {
+      "id": "cream-kurta-set-1",
+      "description": "Front view of the Cream Silk Kurta Set.",
+      "imageUrl": "https://images.unsplash.com/photo-1742272108714-9ef3c24b4b3f?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyfHxjcmVhbSUyMGNsb3RoaW5nfGVufDB8fHx8MTc2Mzk4NTcxOXww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "cream clothing"
+    },
+    {
+      "id": "cream-kurta-set-2",
+      "description": "Detail of the embroidery on the Cream Silk Kurta Set.",
+      "imageUrl": "https://images.unsplash.com/photo-1625479141767-715ceef6b310?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw2fHx3aGl0ZSUyMGVtYnJvaWRlcnl8ZW58MHx8fHwxNzYzOTg1NzE5fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "white embroidery"
+    },
+    {
+      "id": "sapphire-kurta-1",
+      "description": "A beautiful sapphire blue kurta with silver embroidery.",
+      "imageUrl": "https://images.unsplash.com/photo-1559034302-f85a7d15cdae?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw5fHxibHVlJTIwZHJlc3N8ZW58MHx8fHwxNzYzOTg1NzE5fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "blue dress"
+    },
+    {
+      "id": "emerald-kurta-set-1",
+      "description": "An emerald green kurta set with matching pants and dupatta.",
+      "imageUrl": "https://images.unsplash.com/photo-1666112512323-6ab4097385ce?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw3fHxncmVlbiUyMGNsb3RoaW5nfGVufDB8fHx8MTc2Mzk4NTcxOXww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "green clothing"
+    },
+    {
+      "id": "sunset-lehenga-1",
+      "description": "A stunning lehenga in shades of sunset orange and pink.",
+      "imageUrl": "https://images.unsplash.com/photo-1649544144805-7ae9ea5b2307?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw2fHxvcmFuZ2UlMjBkcmVzc3xlbnwwfHx8fDE3NjM5ODU3MTl8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "orange dress"
+    },
+    {
+      "id": "ivory-kurta-1",
+      "description": "A simple and elegant ivory white kurta.",
+      "imageUrl": "https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwzfHx3aGl0ZSUyMHNoaXJ0fGVufDB8fHx8MTc2Mzg4MjMzOHww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "white shirt"
+    },
+    {
+      "id": "jet-black-set-1",
+      "description": "A modern jet black kurta set.",
+      "imageUrl": "https://images.unsplash.com/photo-1763609973399-a051835180b2?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw4fHxibGFjayUyMGNsb3RoaW5nfGVufDB8fHx8MTc2Mzk4NTcxOXww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "black clothing"
+    },
+    {
+      "id": "fuchsia-lehenga-1",
+      "description": "A vibrant fuchsia pink lehenga for festive occasions.",
+      "imageUrl": "https://images.unsplash.com/photo-1473286835901-04adb1afab03?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw3fHxwaW5rJTIwZHJlc3N8ZW58MHx8fHwxNzYzOTE1NjE4fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "pink dress"
+    }
+  ]
 }
