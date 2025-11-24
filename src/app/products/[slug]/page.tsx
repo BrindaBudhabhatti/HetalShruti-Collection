@@ -1,26 +1,12 @@
 import { getProductBySlug, getProducts } from '@/lib/products';
 import { notFound } from 'next/navigation';
 import Image from 'next/image';
-import { Button } from '@/components/ui/button';
-import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
-import { Label } from '@/components/ui/label';
-import {
-  Carousel,
-  CarouselContent,
-  CarouselItem,
-  CarouselNext,
-  CarouselPrevious,
-} from "@/components/ui/carousel"
 import {
   Accordion,
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion"
-import { PlaceHolderImages } from '@/lib/placeholder-images';
-import ProductInteraction from './ProductInteraction';
-import OutfitRecommender from '@/components/OutfitRecommender';
-import Link from 'next/link';
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -29,7 +15,18 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb"
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselNext,
+  CarouselPrevious,
+} from "@/components/ui/carousel"
+import OutfitRecommender from '@/components/OutfitRecommender';
 import { categories } from '@/lib/types';
+import { PlaceHolderImages } from '@/lib/placeholder-images';
+import ProductInteraction from './ProductInteraction';
+import Link from 'next/link';
 
 
 export async function generateStaticParams() {
@@ -145,59 +142,5 @@ export default function ProductPage({ params }: { params: { slug: string } }) {
         <OutfitRecommender product={product} />
       </div>
     </div>
-  );
-}
-
-// Create a new file for this component to keep the page as a Server Component
-// src/app/products/[slug]/ProductInteraction.tsx
-import { useState } from 'react';
-import type { Product } from '@/lib/types';
-import { useCart } from '@/hooks/use-cart';
-
-function ProductInteraction({ product }: { product: Product }) {
-  const [selectedSize, setSelectedSize] = useState<string | null>(product.sizes[0] || null);
-  const [error, setError] = useState<string | null>(null);
-  const { addToCart } = useCart();
-
-  const handleAddToCart = () => {
-    if (!selectedSize) {
-      setError("Please select a size.");
-      return;
-    }
-    setError(null);
-    addToCart(product, selectedSize);
-  };
-
-  return (
-    <>
-      <div className="mt-6">
-        <h3 className="text-lg font-medium text-foreground">Size</h3>
-        <RadioGroup
-          value={selectedSize ?? ""}
-          onValueChange={setSelectedSize}
-          className="mt-4 flex flex-wrap gap-4"
-        >
-          {product.sizes.map((size) => (
-            <div key={size}>
-              <RadioGroupItem value={size} id={`size-${size}`} className="sr-only" />
-              <Label
-                htmlFor={`size-${size}`}
-                className={`flex h-10 w-10 cursor-pointer items-center justify-center rounded-md border text-sm transition-colors
-                  ${selectedSize === size ? 'border-primary bg-primary text-primary-foreground' : 'hover:bg-muted'}`}
-              >
-                {size}
-              </Label>
-            </div>
-          ))}
-        </RadioGroup>
-      </div>
-
-      <div className="mt-8">
-        <Button onClick={handleAddToCart} size="lg" className="w-full bg-accent text-accent-foreground hover:bg-accent/90">
-          Add to Cart
-        </Button>
-        {error && <p className="mt-2 text-sm text-destructive">{error}</p>}
-      </div>
-    </>
   );
 }
