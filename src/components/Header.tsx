@@ -1,9 +1,10 @@
 "use client";
 
 import Link from 'next/link';
-import { ShoppingBag, Sparkles, Menu } from 'lucide-react';
+import { ShoppingBag, Sparkles, Menu, Heart } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useCart } from '@/hooks/use-cart';
+import { useWishlist } from '@/hooks/use-wishlist';
 import { categories } from '@/lib/types';
 import {
   Sheet,
@@ -13,6 +14,7 @@ import {
 
 export default function Header() {
   const { itemCount } = useCart();
+  const { wishlistCount } = useWishlist();
   const navItems = categories.filter(c => c.slug !== 'all');
 
   return (
@@ -31,7 +33,19 @@ export default function Header() {
           ))}
         </nav>
 
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-2">
+          <Link href="/wishlist">
+            <Button variant="ghost" size="icon" aria-label="Wishlist">
+              <div className="relative">
+                <Heart className="h-6 w-6 text-accent" />
+                {wishlistCount > 0 && (
+                  <span className="absolute -right-2 -top-2 flex h-5 w-5 items-center justify-center rounded-full bg-primary text-xs text-primary-foreground">
+                    {wishlistCount}
+                  </span>
+                )}
+              </div>
+            </Button>
+          </Link>
           <Link href="/cart">
             <Button variant="ghost" size="icon" aria-label="Shopping Cart">
               <div className="relative">
