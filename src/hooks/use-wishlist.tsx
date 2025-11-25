@@ -7,7 +7,8 @@ import {
   useState,
   useEffect,
   useCallback,
-  useMemo
+  useMemo,
+  useRef,
 } from 'react';
 import { useToast } from './use-toast';
 
@@ -23,12 +24,15 @@ const WishlistContext = createContext<WishlistContextType | undefined>(undefined
 export function WishlistProvider({ children }: { children: React.ReactNode }) {
   const [items, setItems] = useState<Product[]>([]);
   const { toast } = useToast();
+  const previousItemsRef = useRef<Product[]>([]);
 
   useEffect(() => {
     try {
       const storedWishlist = localStorage.getItem('wishlist');
       if (storedWishlist) {
-        setItems(JSON.parse(storedWishlist));
+        const parsedItems = JSON.parse(storedWishlist);
+        setItems(parsedItems);
+        previousItemsRef.current = parsedItems;
       }
     } catch (error) {
       console.error("Failed to parse wishlist from localStorage", error);
@@ -37,28 +41,40 @@ export function WishlistProvider({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     localStorage.setItem('wishlist', JSON.stringify(items));
-  }, [items]);
+    
+    // Compare current items with previous items to determine if an item was added or removed
+    if (items.length > previousItemsRef.current.length) {
+        const addedItem = items.find(item => !previousItemsRef.current.some(p => p.id === item.id));
+        if (addedItem) {
+             toast({
+                title: "Added to Wishlist",
+                description: `${addedItem.name} has been added to your wishlist.`,
+            });
+        }
+    } else if (items.length < previousItemsRef.current.length) {
+        const removedItem = previousItemsRef.current.find(item => !items.some(p => p.id === item.id));
+        if (removedItem) {
+            toast({
+                title: "Removed from Wishlist",
+                description: `${removedItem.name} has been removed from your wishlist.`,
+                variant: 'destructive',
+            });
+        }
+    }
+
+    previousItemsRef.current = items;
+  }, [items, toast]);
 
   const toggleWishlist = useCallback((product: Product) => {
     setItems((prevItems) => {
       const existingItem = prevItems.find((item) => item.id === product.id);
-
       if (existingItem) {
-        toast({
-          title: "Removed from Wishlist",
-          description: `${product.name} has been removed from your wishlist.`,
-          variant: 'destructive',
-        });
         return prevItems.filter((item) => item.id !== product.id);
       } else {
-        toast({
-          title: "Added to Wishlist",
-          description: `${product.name} has been added to your wishlist.`,
-        });
         return [...prevItems, product];
       }
     });
-  }, [toast]);
+  }, []);
   
   const isInWishlist = useCallback((productId: string) => {
     return items.some(item => item.id === productId);
