@@ -1,0 +1,94 @@
+/**
+ * Core Philosophy: This ruleset establishes a security model for an e-commerce
+ * application. It makes the product catalog publicly readable by anyone but
+ * ensures that user-specific data, like shopping carts, is strictly private.
+ *
+ * Data Structure: The data is organized into two main collections. A top-level
+ * `/products` collection holds the public catalog. User-specific data is
+ * nested under `/users/{userId}`, with a `shopping_cart` subcollection to
+ * ensure each user can only access their own items.
+ *
+ * Key Security Decisions:
+ * - Public Product Catalog: The `/products` collection is world-readable to
+ *   allow browsing by both anonymous and authenticated users.
+ * - Restricted Product Writes: To maintain catalog integrity, all write
+ *   operations (`create`, `update`, `delete`) on the `/products` collection
+ *   are disabled by default in these rules. Securely enabling this would
+ *   require adding an `ownerId` or `adminId` field to the Product entity
+ *   and implementing appropriate admin-only or owner-only write rules.
+ * - Private Shopping Carts: A user's shopping cart is stored in a subcollection
+ *   (`/users/{userId}/shopping_cart`). This path-based ownership model is
+ *   highly secure and performant, guaranteeing that only the authenticated
+ *   owner can view or modify their cart contents.
+ * - No User Listing: The rules do not allow for querying the top-level
+ *   `/users` collection, protecting user privacy.
+ */
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // --------------------------------------------------------------------
+    // Helper Functions
+    // --------------------------------------------------------------------
+
+    /**
+     * Returns true if the user is authenticated.
+     */
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    /**
+     * Returns true if the authenticated user's UID matches the provided userId.
+     * Used to verify ownership of a document or data path.
+     */
+    function isOwner(userId) {
+      return isSignedIn() && request.auth.uid == userId;
+    }
+
+    /**
+     * Returns true if the user is the owner AND the document already exists.
+     * Essential for secure update and delete operations.
+     */
+    function isExistingOwner(userId) {
+      return isOwner(userId) && resource != null;
+    }
+
+
+    // --------------------------------------------------------------------
+    // Collection Rules
+    // --------------------------------------------------------------------
+
+    /**
+     * @description Controls access to the public product catalog.
+     * @path /products/{productId}
+     * @allow (get) Any user, signed in or not, can view a specific product.
+     * @deny (create) A user attempts to create a new product.
+     * @principle Public read for catalog data, but writes are restricted to prevent unauthorized modification.
+     */
+    match /products/{productId} {
+      allow get: if true;
+      allow list: if true;
+
+      // CRITICAL: Cannot implement owner-only writes. The 'Product' entity is missing an 'ownerId' or 'authorId' field.
+      allow create: if false; // TODO: Add admin/owner validation once the schema is updated with an ownership field.
+      allow update: if false; // TODO: Add admin/owner validation once the schema is updated with an ownership field.
+      allow delete: if false; // TODO: Add admin/owner validation once the schema is updated with an ownership field.
+    }
+
+    /**
+     * @description Manages items within a user's private shopping cart.
+     * @path /users/{userId}/shopping_cart/{cartItemId}
+     * @allow (create) A signed-in user (auth.uid: 'user123') creates a new item in their own cart at /users/user123/shopping_cart/item_abc.
+     * @deny (get) A different user (auth.uid: 'user456') tries to read an item from /users/user123/shopping_cart/item_abc.
+     * @principle Restricts access to a user's own data tree using path-based ownership.
+     */
+    match /users/{userId}/shopping_cart/{cartItemId} {
+      allow get: if isOwner(userId);
+      allow list: if isOwner(userId);
+      allow create: if isOwner(userId);
+      allow update: if isExistingOwner(userId);
+      allow delete: if isExistingOwner(userId);
+    }
+  }
+}
