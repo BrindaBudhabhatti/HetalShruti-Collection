@@ -1,84 +1,78 @@
 {
   "entities": {
     "Product": {
-      "$schema": "http://json-schema.org/draft-07/schema#",
       "title": "Product",
-      "type": "object",
       "description": "Represents a product in the HetalShruti Boutique catalog.",
-      "properties": {
-        "id": {
-          "type": "string",
-          "description": "Unique identifier for the product."
-        },
-        "name": {
-          "type": "string",
-          "description": "Name of the product."
-        },
-        "description": {
-          "type": "string",
-          "description": "Detailed description of the product."
-        },
-        "category": {
-          "type": "string",
-          "description": "Category of the product (e.g., Kurta, Kurta Set, Lehenga)."
-        },
-        "price": {
-          "type": "number",
-          "description": "Price of the product."
-        },
-        "imageUrl": {
-          "type": "string",
-          "description": "URL of the product image."
-        },
-        "sizeGuideUrl": {
-          "type": "string",
-          "description": "URL of the size guide for the product."
-        },
-        "occasion": {
-          "type": "string",
-          "description": "Occasion for which the product is suitable (e.g., Regular, Festive)."
-        }
-      },
-      "required": [
-        "id",
-        "name",
-        "description",
-        "category",
-        "price",
-        "imageUrl"
-      ]
-    },
-    "ShoppingCartItem": {
-      "$schema": "http://json-schema.org/draft-07/schema#",
-      "title": "ShoppingCartItem",
       "type": "object",
-      "description": "Represents an item in the shopping cart.",
       "properties": {
-        "id": {
-          "type": "string",
-          "description": "Unique identifier for the shopping cart item."
+        "name": { "type": "string", "description": "Name of the product." },
+        "slug": { "type": "string", "description": "URL-friendly slug for the product." },
+        "description": { "type": "string", "description": "Detailed description of the product." },
+        "price": { "type": "number", "description": "Price of the product." },
+        "images": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "id": { "type": "string" },
+              "alt": { "type": "string" }
+            },
+            "required": ["id", "alt"]
+          }
         },
-        "productId": {
-          "type": "string",
-          "description": "Reference to Product. (Relationship: Product 1:N ShoppingCartItem)"
-        },
-        "quantity": {
-          "type": "number",
-          "description": "Quantity of the product in the cart."
-        }
+        "category": { "type": "string", "enum": ["kurtas", "kurta-sets", "lehengas"] },
+        "tags": { "type": "array", "items": { "type": "string", "enum": ["regular", "festive"] } },
+        "sizes": { "type": "array", "items": { "type": "string", "enum": ["S", "M", "L", "XL", "XXL"] } },
+        "stock": { "type": "number", "description": "Number of items available in stock." }
       },
-      "required": [
-        "id",
-        "productId",
-        "quantity"
-      ]
+      "required": ["name", "slug", "description", "price", "images", "category", "stock"]
+    },
+    "Order": {
+      "title": "Order",
+      "description": "Represents a customer's order.",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string", "description": "The ID of the user who placed the order." },
+        "items": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "productId": { "type": "string" },
+              "name": { "type": "string" },
+              "size": { "type": "string" },
+              "quantity": { "type": "number" },
+              "price": { "type": "number" }
+            },
+            "required": ["productId", "name", "size", "quantity", "price"]
+          }
+        },
+        "total": { "type": "number" },
+        "shippingInfo": {
+          "type": "object",
+          "properties": {
+            "name": { "type": "string" },
+            "email": { "type": "string" },
+            "address": { "type": "string" },
+            "city": { "type": "string" },
+            "postalCode": { "type": "string" },
+            "country": { "type": "string" }
+          },
+          "required": ["name", "email", "address", "city", "postalCode", "country"]
+        },
+        "paymentScreenshotUrl": { "type": "string" },
+        "status": {
+          "type": "string",
+          "enum": ["verification-pending", "confirmed", "shipped", "delivered", "cancelled"],
+          "description": "The current status of the order."
+        },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["userId", "items", "total", "shippingInfo", "paymentScreenshotUrl", "status", "createdAt"]
     }
   },
   "auth": {
-    "providers": [
-      "password",
-      "anonymous"
-    ]
+    "providers": ["password", "anonymous"]
   },
   "firestore": {
     "structure": [
@@ -86,39 +80,18 @@
         "path": "products/{productId}",
         "definition": {
           "entityName": "Product",
-          "schema": {
-            "$ref": "#/backend/entities/Product"
-          },
-          "description": "Stores product information for the HetalShruti Boutique catalog.",
-          "params": [
-            {
-              "name": "productId",
-              "description": "Unique identifier for the product."
-            }
-          ]
+          "schema": { "$ref": "#/backend/entities/Product" },
+          "description": "Stores product information for the HetalShruti Boutique catalog."
         }
       },
       {
-        "path": "users/{userId}/shopping_cart/{cartItemId}",
+        "path": "users/{userId}/orders/{orderId}",
         "definition": {
-          "entityName": "ShoppingCartItem",
-          "schema": {
-            "$ref": "#/backend/entities/ShoppingCartItem"
-          },
-          "description": "Stores shopping cart items for each user. Path-based ownership ensures only the user can access their own cart. No denormalization is required as only the user has access to their own shopping cart.",
-          "params": [
-            {
-              "name": "userId",
-              "description": "Unique identifier for the user."
-            },
-            {
-              "name": "cartItemId",
-              "description": "Unique identifier for the shopping cart item."
-            }
-          ]
+          "entityName": "Order",
+          "schema": { "$ref": "#/backend/entities/Order" },
+          "description": "Stores orders for each user."
         }
       }
-    ],
-    "reasoning": "The Firestore data structure is designed to support the HetalShruti Boutique e-commerce application, focusing on products and shopping cart functionality.  Authorization Independence is achieved by not requiring any `get()` calls in security rules.  Since the application logic does not specify a need for user-specific product lists, or collaborative product management, the structure is straightforward.\n\nThe `products` collection stores product information, enabling category browsing and detailed product pages. The `users/{userId}/shopping_cart/{cartItemId}` path stores individual shopping cart items for each user. This approach ensures private user data and simplifies list operations, as each user can only access their own cart. The `products` collection can be read by all users (QAP - Rules are not Filters), but write access is restricted.\n\nThis design prioritizes simplicity and security while meeting the core feature requirements of the application."
+    ]
   }
 }

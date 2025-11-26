@@ -15,6 +15,7 @@ export type Product = {
   category: Category;
   tags: ('regular' | 'festive')[];
   sizes: ('S' | 'M' | 'L' | 'XL' | 'XXL')[];
+  stock: number;
 };
 
 export type CartItem = {
