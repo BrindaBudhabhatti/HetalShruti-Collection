@@ -5,6 +5,7 @@ import { WishlistProvider } from '@/hooks/use-wishlist';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import './globals.css';
+import { FirebaseClientProvider } from '@/firebase';
 
 export const metadata: Metadata = {
   title: 'HetalShruti Boutique',
@@ -24,16 +25,18 @@ export default function RootLayout({
         <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400..700;1,400..700&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet" />
       </head>
       <body className="font-body antialiased">
-        <WishlistProvider>
-          <CartProvider>
-            <div className="flex min-h-screen flex-col">
-              <Header />
-              <main className="flex-grow">{children}</main>
-              <Footer />
-            </div>
-            <Toaster />
-          </CartProvider>
-        </WishlistProvider>
+        <FirebaseClientProvider>
+          <WishlistProvider>
+            <CartProvider>
+              <div className="flex min-h-screen flex-col">
+                <Header />
+                <main className="flex-grow">{children}</main>
+                <Footer />
+              </div>
+              <Toaster />
+            </CartProvider>
+          </WishlistProvider>
+        </FirebaseClientProvider>
       </body>
     </html>
   );

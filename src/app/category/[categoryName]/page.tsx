@@ -20,9 +20,9 @@ export async function generateStaticParams() {
   }));
 }
 
-export default function CategoryPage({ params }: { params: { categoryName: Category } }) {
+export default async function CategoryPage({ params }: { params: { categoryName: Category } }) {
   const { categoryName } = params;
-  const products = getProducts(categoryName);
+  const products = await getProducts(categoryName);
   const category = categories.find(c => c.slug === categoryName);
 
   if (!category) {

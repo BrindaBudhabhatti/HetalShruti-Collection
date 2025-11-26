@@ -13,8 +13,8 @@ const categories = [
   { name: 'Lehengas', href: '/category/lehengas', description: 'Exquisite lehengas for celebrations.' },
 ];
 
-export default function Home() {
-  const featuredProducts = getProducts().slice(0, 4);
+export default async function Home() {
+  const featuredProducts = await getProducts();
   const heroImage = PlaceHolderImages.find(p => p.id === 'hero-1');
 
   return (
@@ -51,7 +51,7 @@ export default function Home() {
         </div>
         <p className="mt-4 text-center text-lg text-muted-foreground">Handpicked styles, just for you.</p>
         <div className="mt-12 grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-4 xl:gap-x-8">
-          {featuredProducts.map((product) => (
+          {featuredProducts.slice(0, 4).map((product) => (
             <ProductCard key={product.id} product={product} />
           ))}
         </div>

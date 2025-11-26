@@ -30,12 +30,12 @@ import Link from 'next/link';
 
 
 export async function generateStaticParams() {
-    const products = getProducts();
+    const products = await getProducts();
     return products.map(product => ({ slug: product.slug }));
 }
 
-export default function ProductPage({ params }: { params: { slug: string } }) {
-  const product = getProductBySlug(params.slug);
+export default async function ProductPage({ params }: { params: { slug: string } }) {
+  const product = await getProductBySlug(params.slug);
 
   if (!product) {
     notFound();
