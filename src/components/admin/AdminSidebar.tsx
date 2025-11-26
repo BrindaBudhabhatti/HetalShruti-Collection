@@ -24,10 +24,11 @@ export function AdminSidebar() {
   const { toast } = useToast();
 
   const handleSignOut = async () => {
+    if (!auth) return;
     try {
       await signOut(auth);
       toast({ title: "Signed Out", description: "You have been successfully signed out." });
-      router.push('/login');
+      router.push('/auth/login');
     } catch (error) {
       toast({ variant: "destructive", title: "Error", description: "Failed to sign out." });
     }
@@ -46,7 +47,7 @@ export function AdminSidebar() {
           {navItems.map((item) => (
             <Link key={item.name} href={item.href}>
               <Button
-                variant={pathname.startsWith(item.href) ? "secondary" : "ghost"}
+                variant={pathname === item.href || (item.href !== "/admin" && pathname.startsWith(item.href)) ? "secondary" : "ghost"}
                 className="w-full justify-start gap-2"
               >
                 <item.icon className="h-5 w-5" />
