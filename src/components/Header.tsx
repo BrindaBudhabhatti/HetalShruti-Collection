@@ -49,6 +49,97 @@ export default function Header() {
     }
   }
 
+  const renderClientOnlyContent = () => (
+    <>
+      <Link href="/wishlist">
+        <Button variant="ghost" size="icon" aria-label="Wishlist">
+          <div className="relative">
+            <Heart className="h-6 w-6 text-accent" />
+            {wishlistCount > 0 && (
+              <span className="absolute -right-2 -top-2 flex h-5 w-5 items-center justify-center rounded-full bg-primary text-xs text-primary-foreground">
+                {wishlistCount}
+              </span>
+            )}
+          </div>
+        </Button>
+      </Link>
+      <Link href="/cart">
+        <Button variant="ghost" size="icon" aria-label="Shopping Cart">
+          <div className="relative">
+            <ShoppingBag className="h-6 w-6 text-accent" />
+            {itemCount > 0 && (
+              <span className="absolute -right-2 -top-2 flex h-5 w-5 items-center justify-center rounded-full bg-primary text-xs text-primary-foreground">
+                {itemCount}
+              </span>
+            )}
+          </div>
+        </Button>
+      </Link>
+
+      {!isUserLoading && (
+        user ? (
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="ghost" size="icon">
+                <User className="h-6 w-6 text-accent" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              <DropdownMenuLabel>My Account</DropdownMenuLabel>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem onClick={() => { /* Navigate to profile page */ }}>Profile</DropdownMenuItem>
+              <DropdownMenuItem onClick={() => { /* Navigate to orders page */ }}>My Orders</DropdownMenuItem>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem onClick={handleSignOut} className="text-destructive">
+                <LogOut className="mr-2 h-4 w-4" />
+                <span>Sign Out</span>
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        ) : (
+          <div className="hidden md:flex">
+              <Button variant="outline" asChild>
+                <Link href="/auth/login">
+                    <LogIn className="mr-2"/>
+                    Login
+                </Link>
+              </Button>
+          </div>
+        )
+      )}
+
+      <div className="md:hidden">
+          <Sheet>
+          <SheetTrigger asChild>
+              <Button variant="ghost" size="icon">
+              <Menu className="h-6 w-6" />
+              </Button>
+          </SheetTrigger>
+          <SheetContent side="right">
+              <div className="flex flex-col gap-6 p-6">
+                  <Link href="/" className="flex items-center gap-2 mb-4">
+                      <Sparkles className="h-8 w-8 text-primary" />
+                      <span className="font-headline text-2xl font-bold text-primary">HetalShruti</span>
+                  </Link>
+                  {navItems.map((item) => (
+                      <Link key={item.slug} href={`/category/${item.slug}`} className="text-xl transition-colors hover:text-primary">
+                      {item.name}
+                      </Link>
+                  ))}
+                  <div className="mt-4 border-t pt-4">
+                  {!isUserLoading && !user && (
+                      <Link href="/auth/login">
+                      <Button className="w-full">Login / Sign Up</Button>
+                      </Link>
+                  )}
+                  </div>
+              </div>
+          </SheetContent>
+          </Sheet>
+      </div>
+    </>
+  );
+
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="container mx-auto flex h-20 items-center justify-between px-4">
@@ -66,98 +157,10 @@ export default function Header() {
         </nav>
 
         <div className="flex items-center gap-2">
-          <Link href="/wishlist">
-            <Button variant="ghost" size="icon" aria-label="Wishlist">
-              <div className="relative">
-                <Heart className="h-6 w-6 text-accent" />
-                {isClient && wishlistCount > 0 && (
-                  <span className="absolute -right-2 -top-2 flex h-5 w-5 items-center justify-center rounded-full bg-primary text-xs text-primary-foreground">
-                    {wishlistCount}
-                  </span>
-                )}
-              </div>
-            </Button>
-          </Link>
-          <Link href="/cart">
-            <Button variant="ghost" size="icon" aria-label="Shopping Cart">
-              <div className="relative">
-                <ShoppingBag className="h-6 w-6 text-accent" />
-                {isClient && itemCount > 0 && (
-                  <span className="absolute -right-2 -top-2 flex h-5 w-5 items-center justify-center rounded-full bg-primary text-xs text-primary-foreground">
-                    {itemCount}
-                  </span>
-                )}
-              </div>
-            </Button>
-          </Link>
-          
-          {isClient && (
-            <>
-              {!isUserLoading && (
-                user ? (
-                  <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
-                      <Button variant="ghost" size="icon">
-                        <User className="h-6 w-6 text-accent" />
-                      </Button>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent align="end">
-                      <DropdownMenuLabel>My Account</DropdownMenuLabel>
-                      <DropdownMenuSeparator />
-                      <DropdownMenuItem onClick={() => { /* Navigate to profile page */ }}>Profile</DropdownMenuItem>
-                      <DropdownMenuItem onClick={() => { /* Navigate to orders page */ }}>My Orders</DropdownMenuItem>
-                      <DropdownMenuSeparator />
-                      <DropdownMenuItem onClick={handleSignOut} className="text-destructive">
-                        <LogOut className="mr-2 h-4 w-4" />
-                        <span>Sign Out</span>
-                      </DropdownMenuItem>
-                    </DropdownMenuContent>
-                  </DropdownMenu>
-                ) : (
-                  <div className="hidden md:flex">
-                     <Button variant="outline" asChild>
-                        <Link href="/auth/login">
-                            <LogIn className="mr-2"/>
-                            Login
-                        </Link>
-                     </Button>
-                  </div>
-                )
-              )}
-
-              <div className="md:hidden">
-                  <Sheet>
-                  <SheetTrigger asChild>
-                      <Button variant="ghost" size="icon">
-                      <Menu className="h-6 w-6" />
-                      </Button>
-                  </SheetTrigger>
-                  <SheetContent side="right">
-                      <div className="flex flex-col gap-6 p-6">
-                          <Link href="/" className="flex items-center gap-2 mb-4">
-                              <Sparkles className="h-8 w-8 text-primary" />
-                              <span className="font-headline text-2xl font-bold text-primary">HetalShruti</span>
-                          </Link>
-                          {navItems.map((item) => (
-                              <Link key={item.slug} href={`/category/${item.slug}`} className="text-xl transition-colors hover:text-primary">
-                              {item.name}
-                              </Link>
-                          ))}
-                          <div className="mt-4 border-t pt-4">
-                          {!isUserLoading && !user && (
-                              <Link href="/auth/login">
-                              <Button className="w-full">Login / Sign Up</Button>
-                              </Link>
-                          )}
-                          </div>
-                      </div>
-                  </SheetContent>
-                  </Sheet>
-              </div>
-            </>
-          )}
+          {isClient ? renderClientOnlyContent() : <div className="h-10 w-[184px] md:w-[248px]" />}
         </div>
       </div>
     </header>
   );
 }
+
