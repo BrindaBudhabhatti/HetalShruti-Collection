@@ -1,5 +1,6 @@
 "use client";
 
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { ShoppingBag, Sparkles, Menu, Heart, User, LogOut, LogIn } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -31,6 +32,11 @@ export default function Header() {
   const auth = useAuth();
   const { toast } = useToast();
   const navItems = categories.filter(c => c.slug !== 'all');
+  const [isClient, setIsClient] = useState(false);
+
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
 
   const handleSignOut = async () => {
     if (!auth) return;
@@ -84,7 +90,8 @@ export default function Header() {
             </Button>
           </Link>
           
-          {!isUserLoading && (
+          <div className="w-10 h-10">
+          {isClient && !isUserLoading && (
             user ? (
                <DropdownMenu>
                 <DropdownMenuTrigger asChild>
@@ -113,6 +120,7 @@ export default function Header() {
               </Link>
             )
           )}
+          </div>
 
           <div className="md:hidden">
             <Sheet>
@@ -133,7 +141,7 @@ export default function Header() {
                         </Link>
                     ))}
                     <div className="mt-4 border-t pt-4">
-                       {!isUserLoading && !user && (
+                       {isClient && !isUserLoading && !user && (
                          <Link href="/auth/login">
                            <Button className="w-full">Login / Sign Up</Button>
                          </Link>
