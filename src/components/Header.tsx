@@ -112,45 +112,49 @@ export default function Header() {
                 </DropdownMenuContent>
               </DropdownMenu>
             ) : (
-              <Link href="/auth/login" className="hidden md:inline-flex">
-                 <Button variant="outline">
-                    <LogIn className="mr-2"/>
-                    Login
+              <div className="hidden md:flex">
+                 <Button variant="outline" asChild>
+                    <Link href="/auth/login">
+                        <LogIn className="mr-2"/>
+                        Login
+                    </Link>
                  </Button>
-              </Link>
+              </div>
             )
           )}
           </div>
 
-          <div className="md:hidden">
-            <Sheet>
-              <SheetTrigger asChild>
-                <Button variant="ghost" size="icon">
-                  <Menu className="h-6 w-6" />
-                </Button>
-              </SheetTrigger>
-              <SheetContent side="right">
-                <div className="flex flex-col gap-6 p-6">
-                    <Link href="/" className="flex items-center gap-2 mb-4">
-                        <Sparkles className="h-8 w-8 text-primary" />
-                        <span className="font-headline text-2xl font-bold text-primary">HetalShruti</span>
-                    </Link>
-                    {navItems.map((item) => (
-                        <Link key={item.slug} href={`/category/${item.slug}`} className="text-xl transition-colors hover:text-primary">
-                        {item.name}
+          {isClient && (
+            <div className="md:hidden">
+                <Sheet>
+                <SheetTrigger asChild>
+                    <Button variant="ghost" size="icon">
+                    <Menu className="h-6 w-6" />
+                    </Button>
+                </SheetTrigger>
+                <SheetContent side="right">
+                    <div className="flex flex-col gap-6 p-6">
+                        <Link href="/" className="flex items-center gap-2 mb-4">
+                            <Sparkles className="h-8 w-8 text-primary" />
+                            <span className="font-headline text-2xl font-bold text-primary">HetalShruti</span>
                         </Link>
-                    ))}
-                    <div className="mt-4 border-t pt-4">
-                       {isClient && !isUserLoading && !user && (
-                         <Link href="/auth/login">
-                           <Button className="w-full">Login / Sign Up</Button>
-                         </Link>
-                       )}
+                        {navItems.map((item) => (
+                            <Link key={item.slug} href={`/category/${item.slug}`} className="text-xl transition-colors hover:text-primary">
+                            {item.name}
+                            </Link>
+                        ))}
+                        <div className="mt-4 border-t pt-4">
+                        {!isUserLoading && !user && (
+                            <Link href="/auth/login">
+                            <Button className="w-full">Login / Sign Up</Button>
+                            </Link>
+                        )}
+                        </div>
                     </div>
-                </div>
-              </SheetContent>
-            </Sheet>
-          </div>
+                </SheetContent>
+                </Sheet>
+            </div>
+          )}
         </div>
       </div>
     </header>
