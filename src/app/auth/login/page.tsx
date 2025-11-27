@@ -53,9 +53,10 @@ export default function LoginPage() {
       await signInWithEmailAndPassword(auth, data.email, data.password);
       toast({
         title: 'Login Successful',
-        description: "Welcome back, admin!",
+        description: "Welcome back!",
       });
-      router.push('/admin');
+      // This will be updated to check for admin role
+      router.push('/admin'); 
     } catch (error: any) {
       console.error(error);
       toast({
@@ -72,8 +73,8 @@ export default function LoginPage() {
     <Card className="w-full max-w-md">
       <CardHeader className="text-center">
         <Sparkles className="mx-auto h-12 w-12 text-primary" />
-        <CardTitle className="mt-4 text-3xl font-bold">Admin Login</CardTitle>
-        <CardDescription>Enter your credentials to access the dashboard.</CardDescription>
+        <CardTitle className="mt-4 text-3xl font-bold">Login</CardTitle>
+        <CardDescription>Enter your credentials to access your account.</CardDescription>
       </CardHeader>
       <CardContent>
         <Form {...form}>
@@ -85,7 +86,7 @@ export default function LoginPage() {
                 <FormItem>
                   <FormLabel>Email</FormLabel>
                   <FormControl>
-                    <Input type="email" placeholder="admin@example.com" {...field} />
+                    <Input type="email" placeholder="you@example.com" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
