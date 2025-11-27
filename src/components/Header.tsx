@@ -1,21 +1,46 @@
 "use client";
 
 import Link from 'next/link';
-import { ShoppingBag, Sparkles, Menu, Heart } from 'lucide-react';
+import { ShoppingBag, Sparkles, Menu, Heart, User, LogOut, LogIn } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useCart } from '@/hooks/use-cart';
 import { useWishlist } from '@/hooks/use-wishlist';
 import { categories } from '@/lib/types';
+import { useUser, useAuth } from '@/firebase';
 import {
   Sheet,
   SheetContent,
   SheetTrigger,
 } from "@/components/ui/sheet"
+import { signOut } from 'firebase/auth';
+import { useToast } from '@/hooks/use-toast';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
+
 
 export default function Header() {
   const { itemCount } = useCart();
   const { wishlistCount } = useWishlist();
+  const { user, isUserLoading } = useUser();
+  const auth = useAuth();
+  const { toast } = useToast();
   const navItems = categories.filter(c => c.slug !== 'all');
+
+  const handleSignOut = async () => {
+    if (!auth) return;
+    try {
+      await signOut(auth);
+      toast({ title: "Signed Out", description: "You have been successfully signed out." });
+    } catch (error) {
+      toast({ variant: "destructive", title: "Error", description: "Failed to sign out." });
+    }
+  }
 
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
@@ -58,6 +83,37 @@ export default function Header() {
               </div>
             </Button>
           </Link>
+          
+          {!isUserLoading && (
+            user ? (
+               <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="ghost" size="icon">
+                    <User className="h-6 w-6 text-accent" />
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end">
+                  <DropdownMenuLabel>My Account</DropdownMenuLabel>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem onClick={() => { /* Navigate to profile page */ }}>Profile</DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => { /* Navigate to orders page */ }}>My Orders</DropdownMenuItem>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem onClick={handleSignOut} className="text-destructive">
+                    <LogOut className="mr-2 h-4 w-4" />
+                    <span>Sign Out</span>
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            ) : (
+              <Link href="/auth/login" className="hidden md:inline-flex">
+                 <Button variant="outline">
+                    <LogIn className="mr-2"/>
+                    Login
+                 </Button>
+              </Link>
+            )
+          )}
+
           <div className="md:hidden">
             <Sheet>
               <SheetTrigger asChild>
@@ -76,6 +132,13 @@ export default function Header() {
                         {item.name}
                         </Link>
                     ))}
+                    <div className="mt-4 border-t pt-4">
+                       {!isUserLoading && !user && (
+                         <Link href="/auth/login">
+                           <Button className="w-full">Login / Sign Up</Button>
+                         </Link>
+                       )}
+                    </div>
                 </div>
               </SheetContent>
             </Sheet>
