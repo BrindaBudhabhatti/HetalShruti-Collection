@@ -3,7 +3,7 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { ShoppingBag, Sparkles, Menu, Heart } from 'lucide-react';
+import { ShoppingBag, Sparkles, Menu, Heart, UserCircle, LogOut, Shield } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useCart } from '@/hooks/use-cart';
 import { useWishlist } from '@/hooks/use-wishlist';
@@ -13,16 +13,37 @@ import {
   SheetContent,
   SheetTrigger,
 } from "@/components/ui/sheet"
+import { useUser } from '@/firebase';
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from './ui/dropdown-menu';
+import { signOut } from 'firebase/auth';
+import { useAuth } from '@/firebase';
+import { useRouter } from 'next/navigation';
+import { useToast } from '@/hooks/use-toast';
 
 export default function Header() {
   const { itemCount } = useCart();
   const { wishlistCount } = useWishlist();
   const navItems = categories.filter(c => c.slug !== 'all');
   const [isClient, setIsClient] = useState(false);
+  const { user, isUserLoading } = useUser();
+  const auth = useAuth();
+  const router = useRouter();
+  const { toast } = useToast();
 
   useEffect(() => {
     setIsClient(true);
   }, []);
+
+  const handleSignOut = async () => {
+    if (!auth) return;
+    try {
+      await signOut(auth);
+      toast({ title: "Signed Out", description: "You have been successfully signed out." });
+      router.push('/');
+    } catch (error) {
+      toast({ variant: "destructive", title: "Error", description: "Failed to sign out." });
+    }
+  }
   
   const renderClientOnlyContent = () => (
     <>
@@ -51,6 +72,15 @@ export default function Header() {
         </Button>
       </Link>
       
+      {user && (
+         <Button asChild variant="outline" size="sm">
+            <Link href="/admin">
+              <Shield className="mr-2 h-4 w-4" />
+              Admin Panel
+            </Link>
+          </Button>
+      )}
+
       <div className="md:hidden">
           <Sheet>
           <SheetTrigger asChild>
@@ -69,6 +99,21 @@ export default function Header() {
                       {item.name}
                       </Link>
                   ))}
+                   {user && (
+                    <>
+                      <DropdownMenuSeparator />
+                       <Link href="/admin">
+                        <Button variant="secondary" className="w-full justify-start">
+                          <Shield className="mr-2 h-5 w-5" />
+                          Admin Panel
+                        </Button>
+                      </Link>
+                       <Button onClick={handleSignOut} variant="ghost" className="w-full justify-start">
+                         <LogOut className="mr-2 h-5 w-5" />
+                         Sign Out
+                       </Button>
+                    </>
+                  )}
               </div>
           </SheetContent>
           </Sheet>
@@ -93,7 +138,7 @@ export default function Header() {
         </nav>
 
         <div className="flex items-center gap-2">
-          {isClient ? renderClientOnlyContent() : <div className="h-10 w-[148px] md:w-[104px]" />}
+           {isClient ? renderClientOnlyContent() : <div className="h-10 w-[104px]" />}
         </div>
       </div>
     </header>
