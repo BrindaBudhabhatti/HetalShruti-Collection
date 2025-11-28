@@ -19,28 +19,27 @@ import { useToast } from '@/hooks/use-toast';
 import { useRouter } from 'next/navigation';
 import { Sparkles, Loader2 } from 'lucide-react';
 import { useAuth } from '@/firebase';
-import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from 'firebase/auth';
+import { signInWithEmailAndPassword } from 'firebase/auth';
 
-const authSchema = z.object({
+const loginSchema = z.object({
   email: z.string().email('Invalid email address'),
   password: z.string().min(6, 'Password must be at least 6 characters'),
 });
 
-type AuthFormValues = z.infer<typeof authSchema>;
+type LoginFormValues = z.infer<typeof loginSchema>;
 
-export default function AuthPage() {
+export default function LoginPage() {
   const { toast } = useToast();
   const router = useRouter();
   const auth = useAuth();
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [isSignUp, setIsSignUp] = useState(false);
 
-  const form = useForm<AuthFormValues>({
-    resolver: zodResolver(authSchema),
+  const form = useForm<LoginFormValues>({
+    resolver: zodResolver(loginSchema),
     defaultValues: { email: '', password: '' },
   });
 
-  const onSubmit = async (data: AuthFormValues) => {
+  const onSubmit = async (data: LoginFormValues) => {
     if (!auth) {
       toast({
         variant: "destructive",
@@ -51,25 +50,17 @@ export default function AuthPage() {
     }
     setIsSubmitting(true);
     try {
-      if (isSignUp) {
-        await createUserWithEmailAndPassword(auth, data.email, data.password);
-        toast({
-          title: 'Account Created!',
-          description: "You have been successfully signed up.",
-        });
-      } else {
-        await signInWithEmailAndPassword(auth, data.email, data.password);
-        toast({
-          title: 'Login Successful',
-          description: "Welcome back!",
-        });
-      }
-      router.push('/'); // Redirect to home page after login/signup
+      await signInWithEmailAndPassword(auth, data.email, data.password);
+      toast({
+        title: 'Login Successful',
+        description: "Welcome back, admin!",
+      });
+      router.push('/admin');
     } catch (error: any) {
       console.error(error);
       toast({
         variant: "destructive",
-        title: isSignUp ? 'Sign Up Failed' : 'Login Failed',
+        title: 'Login Failed',
         description: error.message || 'An unknown error occurred.',
       });
     } finally {
@@ -81,8 +72,8 @@ export default function AuthPage() {
     <Card className="w-full max-w-md">
       <CardHeader className="text-center">
         <Sparkles className="mx-auto h-12 w-12 text-primary" />
-        <CardTitle className="mt-4 text-3xl font-bold">{isSignUp ? 'Create an Account' : 'Welcome Back!'}</CardTitle>
-        <CardDescription>{isSignUp ? 'Enter your details to create a new account.' : 'Sign in to access your account.'}</CardDescription>
+        <CardTitle className="mt-4 text-3xl font-bold">Admin Login</CardTitle>
+        <CardDescription>Enter your credentials to access the dashboard.</CardDescription>
       </CardHeader>
       <CardContent>
         <Form {...form}>
@@ -94,7 +85,7 @@ export default function AuthPage() {
                 <FormItem>
                   <FormLabel>Email</FormLabel>
                   <FormControl>
-                    <Input type="email" placeholder="you@example.com" {...field} />
+                    <Input type="email" placeholder="admin@example.com" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -115,15 +106,10 @@ export default function AuthPage() {
             />
             <Button type="submit" className="w-full" disabled={isSubmitting}>
               {isSubmitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-              {isSubmitting ? (isSignUp ? 'Creating Account...' : 'Signing In...') : (isSignUp ? 'Sign Up' : 'Sign In')}
+              {isSubmitting ? 'Signing In...' : 'Sign In'}
             </Button>
           </form>
         </Form>
-        <div className="mt-6 text-center">
-          <Button variant="link" onClick={() => setIsSignUp(!isSignUp)}>
-            {isSignUp ? 'Already have an account? Sign In' : "Don't have an account? Sign Up"}
-          </Button>
-        </div>
       </CardContent>
     </Card>
   );

@@ -14,7 +14,6 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
     if (!isUserLoading && !user) {
       router.replace('/auth/login');
     }
-    // Add admin role check here in the future
   }, [user, isUserLoading, router]);
 
   if (isUserLoading || !user) {
